@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import SearchBar from './components/SearchBar';
@@ -18,6 +19,7 @@ const App: React.FC = () => {
 	const [games, setGames] = useState<Game[]>([]);
 	const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 	const [error, setError] = useState<string | undefined>(undefined);
+
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [selectedGenre, setSelectedGenre] = useState<string>('');
 
@@ -26,24 +28,9 @@ const App: React.FC = () => {
 
 		const fetchData = async () => {
 			try {
-				const headers = {
-					'dev-email-address': 'menotimfilho@gmail.com',
-				};
-
-				const response = await axios.get(
-					'https://games-test-api-81e9fb0d564a.herokuapp.com/api/data',
-					{
-						headers: headers,
-						timeout: 5000,
-					}
-				);
-
-				if (isMounted) {
-					setGames(response.data);
-					setLoading(false);
-				}
+				// ...
 			} catch (error) {
-				if ((error as AxiosError).code === 'ECONNABORTED') {
+				if (error instanceof AxiosError && error.code === 'ECONNABORTED') {
 					setError('O servidor demorou para responder, tente mais tarde');
 				} else if (
 					error.response &&
