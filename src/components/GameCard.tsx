@@ -14,10 +14,10 @@ type GameCardProps = {
 
 const GameCard: React.FC<GameCardProps> = ({ game }) => {
 	return (
-		<div className="game-card bg-[#1E293B] shadow-lg shadow-[#121924] rounded-lg p-4 flex flex-col justify-between">
-			<div className="">
+		<div className="game-card bg-[#1E293B] shadow-lg shadow-[#121924] rounded-lg p-4 flex flex-col justify-between items-center w-full">
+			<div className=" flex flex-col">
 				<img
-					className="w-full mb-4 rounded-md"
+					className="w-auto mb-4 rounded"
 					src={game.thumbnail}
 					alt={game.title}
 				/>
