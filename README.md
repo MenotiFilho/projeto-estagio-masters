@@ -1,4 +1,4 @@
-# projeto-estagio-masters
+# Projeto Estagio App Masters
 Projeto realizado para o processo seletivo de estagio Frontend React para a App Masters
 
 # Link do [Deploy](https://projeto-estagio-masters.vercel.app/)
