@@ -93,7 +93,7 @@ const App: React.FC = () => {
 	};
 
 	return (
-		<div className="bg-[#0F172A] text-[#e2e8f0] p-2 mx-2 flex justify-center content-center ">
+		<div className="bg-[#0F172A] text-[#e2e8f0] p-2 mb-4 mt-1 mx-2 flex justify-center content-center ">
 			{loading ? (
 				<div>
 					<Oval
