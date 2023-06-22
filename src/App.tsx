@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import SearchBar from './components/SearchBar';
 import GameGrid from './components/GameGrid';
 import GenreFilter from './components/GenreFilter';
@@ -16,7 +16,7 @@ type Game = {
 
 const App: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(true);
-	const [games, setGames] = useState<Game[]>([]);
+	const [games] = useState<Game[]>([]);
 	const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 	const [error, setError] = useState<string | undefined>(undefined);
 
