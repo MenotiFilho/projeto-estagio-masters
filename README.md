@@ -4,6 +4,8 @@ Projeto realizado para o processo seletivo de estagio Frontend React para a App 
 # Link do [Deploy](https://projeto-estagio-masters.vercel.app/)
 
 # Prints do projeto
-![print_todos](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/81dabe59-94b5-41c2-b5ce-6b98458fac2a)
+![Captura de tela 2023-06-22 175414](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/d94198c0-39c8-4a7b-94a4-4ce73d051494)
 
-![print_btt](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/aac43605-f9c7-45e3-b152-511b39ee599a)
+![Captura de tela 2023-06-22 175508](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/a89e4d90-c258-4864-8b25-760b257bedf1)
+
+![Captura de tela 2023-06-22 175442](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/98511e9d-4e4e-45b7-a9b0-c50f35e5e62b)
