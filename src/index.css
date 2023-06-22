@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.genre-filter-scrollbar {
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: nowrap;
+}
+
+.genre-filter-scrollbar:hover {
+	overflow-y: auto;
+}
+
+:root {
+	background-color: #0f172a;
+}
+
+.parent {
+	display: grid;
+	grid-template-columns: repeat(10, 1fr);
+	grid-template-rows: repeat(2, 1fr);
+	grid-column-gap: 5px;
+	grid-row-gap: 5px;
+}
