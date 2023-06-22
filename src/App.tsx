@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import SearchBar from './components/SearchBar';
 import GameGrid from './components/GameGrid';
 import GenreFilter from './components/GenreFilter';
@@ -16,7 +15,7 @@ type Game = {
 
 const App: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(true);
-	const [games] = useState<Game[]>([]);
+	const [games, setGames] = useState<Game[]>([]);
 	const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 	const [error, setError] = useState<string | undefined>(undefined);
 
@@ -28,9 +27,24 @@ const App: React.FC = () => {
 
 		const fetchData = async () => {
 			try {
-				// ...
+				const headers = {
+					'dev-email-address': 'menotimfilho@gmail.com',
+				};
+
+				const response = await axios.get(
+					'https://games-test-api-81e9fb0d564a.herokuapp.com/api/data',
+					{
+						headers: headers,
+						timeout: 5000,
+					}
+				);
+
+				if (isMounted) {
+					setGames(response.data);
+					setLoading(false);
+				}
 			} catch (error) {
-				if (error instanceof AxiosError && error.code === 'ECONNABORTED') {
+				if ((error as AxiosError).code === 'ECONNABORTED') {
 					setError('O servidor demorou para responder, tente mais tarde');
 				} else if (
 					error.response &&
