@@ -15,6 +15,7 @@ type Game = {
 	thumbnail: string;
 	short_description: string;
 	genre: string;
+	favorite: boolean; // Add the favorite property
 };
 
 const App: React.FC = () => {
@@ -25,6 +26,7 @@ const App: React.FC = () => {
 
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [selectedGenre, setSelectedGenre] = useState<string>('');
+	const [showFavorites, setShowFavorites] = useState<boolean>(false);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -44,7 +46,11 @@ const App: React.FC = () => {
 				);
 
 				if (isMounted) {
-					setGames(response.data);
+					const gamesWithFavorites = response.data.map((game: Game) => ({
+						...game,
+						favorite: false,
+					}));
+					setGames(gamesWithFavorites);
 					setLoading(false);
 				}
 			} catch (error) {
@@ -87,8 +93,12 @@ const App: React.FC = () => {
 			);
 		}
 
+		if (showFavorites) {
+			filteredGames = filteredGames.filter((game) => game.favorite);
+		}
+
 		setFilteredGames(filteredGames);
-	}, [games, selectedGenre, searchTerm]);
+	}, [games, selectedGenre, searchTerm, showFavorites]);
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchTerm(event.target.value);
@@ -96,6 +106,10 @@ const App: React.FC = () => {
 
 	const handleGenreChange = (genre: string) => {
 		setSelectedGenre(genre);
+	};
+
+	const handleFavoriteChange = (showFavorites: boolean) => {
+		setShowFavorites(showFavorites);
 	};
 
 	useEffect(() => {

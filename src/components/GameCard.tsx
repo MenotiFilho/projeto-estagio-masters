@@ -4,6 +4,7 @@ import { auth, db } from '@/firebase';
 import { Heart, Star } from '@phosphor-icons/react';
 import { useToast } from './ui/use-toast';
 import { onAuthStateChanged } from 'firebase/auth';
+import { ToastAction } from './ui/toast';
 
 type Game = {
 	id: number;
@@ -11,6 +12,7 @@ type Game = {
 	thumbnail: string;
 	short_description: string;
 	genre: string;
+	favorite: boolean;
 };
 
 type GameCardProps = {
@@ -103,6 +105,7 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 			toast({
 				title: 'Faça o login',
 				description: 'Faça o login para poder favoritar os jogos.',
+				duration: 3000,
 			});
 		}
 	};
@@ -128,6 +131,7 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 			toast({
 				title: 'Faça o login',
 				description: 'Faça o login para poder avaliar os jogos.',
+				duration: 3000,
 			});
 		}
 	};
@@ -135,10 +139,16 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 	const renderHeartIcon = () => {
 		return (
 			<button
-				className="text-gray-500 hover:text-red-500"
+				className={`text-gray-500 transition ease-in-out hover:text-red-500 hover:scale-125 ${
+					favorite ? 'text-red-500' : ''
+				}`}
 				onClick={handleFavoriteClick}
 			>
-				{favorite ? <Heart color="red" weight="fill" /> : <Heart />}
+				{favorite ? (
+					<Heart size={22} color="red" weight="fill" />
+				) : (
+					<Heart size={22} />
+				)}
 			</button>
 		);
 	};
@@ -149,12 +159,12 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 			stars.push(
 				<button
 					key={i}
-					className={`text-yellow-300 hover:text-yellow-500 ${
-						i <= rating ? 'text-yellow-500' : ''
+					className={`text-gray-500 transition ease-in-out hover:text-yellow-500 hover:scale-125 ${
+						i <= rating ? 'text-yellow-500 ' : ''
 					}`}
 					onClick={() => handleRatingClick(i)}
 				>
-					{i <= rating ? <Star weight="fill" /> : <Star />}
+					{i <= rating ? <Star size={22} weight="fill" /> : <Star size={22} />}
 				</button>
 			);
 		}
@@ -172,13 +182,15 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 				<h3 className="text-lg font-bold">{game.title}</h3>
 				<p className="text-sm mb-2 text-white/60">{game.short_description}</p>
 			</div>
-			<div className="flex justify-between w-full mb-4">
-				<div className="flex items-center gap-2">{renderHeartIcon()}</div>
-				<div className="flex items-center gap-1">{renderRatingStars()}</div>
+			<div className="flex flex-col justify-self-end mt-5 w-full">
+				<div className="flex justify-between w-full">
+					<div className="flex items-center">{renderHeartIcon()}</div>
+					<div className="flex items-center gap-1">{renderRatingStars()}</div>
+				</div>
+				<p className="text-slate-400/50 text-xs self-center mt-5">
+					Genre: {game.genre}
+				</p>
 			</div>
-			<p className="text-slate-400/50 text-xs justify-self-end">
-				Genre: {game.genre}
-			</p>
 		</div>
 	);
 };

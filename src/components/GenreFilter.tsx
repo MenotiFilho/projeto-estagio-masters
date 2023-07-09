@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Toggle } from '@/components/ui/toggle';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 
 type Game = {
@@ -8,23 +7,26 @@ type Game = {
 	thumbnail: string;
 	short_description: string;
 	genre: string;
+	favorite: boolean;
 };
 
 type GenreFilterProps = {
 	selectedGenre: string;
 	onGenreChange: (genre: string) => void;
+
 	games: Game[];
 };
 
 const GenreFilter: React.FC<GenreFilterProps> = ({
 	selectedGenre,
 	onGenreChange,
+
 	games,
 }) => {
 	const [isAscending, setIsAscending] = useState(true);
 
 	const handleSortClick = () => {
-		setIsAscending(!isAscending); // Toggle the sorting order when the button is clicked
+		setIsAscending(!isAscending);
 	};
 
 	const genres = [
@@ -34,6 +36,10 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 
 	const handleGenreChange = (genre: string) => {
 		onGenreChange(genre);
+	};
+
+	const handleFavoriteChange = () => {
+		return null;
 	};
 
 	return (
@@ -54,17 +60,23 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 					</button>
 				))}
 			</div>
-			<div className="flex gap-2">
-				<Toggle className="w-fit bg-muted">Favoritos</Toggle>
+			<div className="flex gap-1">
 				<button
-					className="w-fit bg-muted flex items-center justify-center rounded-md px-2"
+					className="bg-[#1E293B] rounded-md px-3 py-1 h-fit text-lg flex items-center justify-center  "
+					onClick={handleFavoriteChange}
+				>
+					Favoritos
+				</button>
+
+				<button
+					className="bg-[#1E293B] rounded-md px-3 py-1 h-fit text-lg flex items-center justify-center  "
 					onClick={handleSortClick}
 				>
 					Ordenar por nota
 					{isAscending ? (
-						<CaretDown className="ml-2" size={24} weight="fill" />
+						<CaretDown className="ml-2" size={20} weight="fill" />
 					) : (
-						<CaretUp className="ml-2" size={24} weight="fill" />
+						<CaretUp className="ml-2" size={20} weight="fill" />
 					)}
 				</button>
 			</div>

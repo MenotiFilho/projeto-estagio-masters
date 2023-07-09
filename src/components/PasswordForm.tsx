@@ -18,6 +18,7 @@ function ResetPasswordForm() {
 				setErrorMessage(error.message);
 			});
 	};
+
 	return (
 		<div className="w-full flex flex-col">
 			<form>
