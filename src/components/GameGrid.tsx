@@ -7,6 +7,7 @@ type Game = {
 	thumbnail: string;
 	short_description: string;
 	genre: string;
+	favorite: boolean;
 };
 
 type GameGridProps = {

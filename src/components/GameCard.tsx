@@ -4,7 +4,6 @@ import { auth, db } from '@/firebase';
 import { Heart, Star } from '@phosphor-icons/react';
 import { useToast } from './ui/use-toast';
 import { onAuthStateChanged } from 'firebase/auth';
-import { ToastAction } from './ui/toast';
 
 type Game = {
 	id: number;

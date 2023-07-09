@@ -108,10 +108,6 @@ const App: React.FC = () => {
 		setSelectedGenre(genre);
 	};
 
-	const handleFavoriteChange = (showFavorites: boolean) => {
-		setShowFavorites(showFavorites);
-	};
-
 	useEffect(() => {
 		const loadUserFavoritesAndRatings = async () => {
 			const user = auth.currentUser;
