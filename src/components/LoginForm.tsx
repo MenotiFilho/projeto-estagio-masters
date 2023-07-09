@@ -1,12 +1,16 @@
 import { auth, signInWithEmailAndPassword } from '../firebase';
 import { useState } from 'react';
 
-function LoginForm({ onLoginSuccess }) {
+interface LoginFormProps {
+	onLoginSuccess: (displayName: string) => void;
+}
+
+function LoginForm({ onLoginSuccess }: LoginFormProps) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
 
-	const onLogin = (e) => {
+	const onLogin = (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrorMessage('');
 
@@ -15,7 +19,8 @@ function LoginForm({ onLoginSuccess }) {
 				// Signed in
 				const user = userCredential.user;
 				console.log(user);
-				onLoginSuccess(user.displayName);
+				const displayName = user.displayName ?? ''; // Verificação de nulidade
+				onLoginSuccess(displayName);
 			})
 			.catch((error) => {
 				const errorCode = error.code;

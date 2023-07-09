@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { addDoc, collection, doc, setDoc, getDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/firebase';
 import { Heart, Star } from '@phosphor-icons/react';
 import { useToast } from './ui/use-toast';

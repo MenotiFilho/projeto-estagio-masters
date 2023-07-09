@@ -6,7 +6,7 @@ function ResetPasswordForm() {
 	const [isEmailSent, setIsEmailSent] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 
-	const handleResetPassword = (e) => {
+	const handleResetPassword = (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrorMessage('');
 
@@ -18,7 +18,6 @@ function ResetPasswordForm() {
 				setErrorMessage(error.message);
 			});
 	};
-
 	return (
 		<div className="w-full flex flex-col">
 			<form>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import LoginForm from './LoginForm';
 import {
 	Dialog,
@@ -32,16 +33,18 @@ const NavBar = () => {
 			} else {
 				setLoggedIn(false);
 				setEmail('');
+				console.log(email);
 				setUsername('');
 			}
 		});
 
 		return () => unsubscribe();
-	}, []);
+	}, [email]);
 
 	const handleLoginSuccess = () => {
 		setLoggedIn(true);
 		setShowLoginDialog(false);
+		console.log(showLoginDialog);
 	};
 
 	const handleSignUpSuccess = () => {

@@ -1,24 +1,29 @@
+import { useState } from 'react';
 import {
 	auth,
 	createUserWithEmailAndPassword,
 	updateProfile,
 } from '../firebase';
-import { useState } from 'react';
 
-function SignUpForm({ onSignUpSuccess }) {
+interface SignUpFormProps {
+	onSignUpSuccess: (displayName: string) => void;
+}
+
+function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
-	const onSignUp = (e) => {
+	const onSignUp = (e: React.FormEvent) => {
 		e.preventDefault();
 		createUserWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
 				const user = userCredential.user;
 				console.log(user);
 
+				const displayName = user.displayName ?? ''; // Verificação de nulidade
 				updateProfile(user, {
-					displayName: username,
+					displayName: displayName,
 				})
 					.then(() => {
 						console.log('Display name updated successfully');
@@ -27,7 +32,7 @@ function SignUpForm({ onSignUpSuccess }) {
 						console.log('Error updating display name:', error);
 					});
 
-				onSignUpSuccess(user.displayName);
+				onSignUpSuccess(displayName);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
