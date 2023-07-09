@@ -26,7 +26,6 @@ const App: React.FC = () => {
 
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [selectedGenre, setSelectedGenre] = useState<string>('');
-	const [showFavorites, setShowFavorites] = useState<boolean>(false);
 
 	useEffect(() => {
 		let isMounted = true;
