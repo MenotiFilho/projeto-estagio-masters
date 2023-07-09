@@ -10,7 +10,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 	onSearchChange,
 }) => {
 	return (
-		<div className="w-full flex justify-center">
+		<div className="w-full flex justify-center mt-5">
 			<input
 				id="searchBar"
 				className="bg-[#1E293B] w-full lg:w-2/3 rounded-lg px-2"

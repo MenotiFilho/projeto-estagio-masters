@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Toggle } from '@/components/ui/toggle';
+import { CaretDown, CaretUp } from '@phosphor-icons/react';
 
 type Game = {
 	id: number;
@@ -19,6 +21,12 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 	onGenreChange,
 	games,
 }) => {
+	const [isAscending, setIsAscending] = useState(true);
+
+	const handleSortClick = () => {
+		setIsAscending(!isAscending); // Toggle the sorting order when the button is clicked
+	};
+
 	const genres = [
 		'Todos',
 		...Array.from(new Set(games.map((game) => game.genre))),
@@ -29,21 +37,37 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 	};
 
 	return (
-		<div className="">
-			{genres.map((genre) => (
+		<div className="flex flex-col gap-2">
+			<div className="">
+				{genres.map((genre) => (
+					<button
+						key={genre}
+						value={genre}
+						className={`${
+							selectedGenre === genre
+								? 'bg-blue-500 text-white'
+								: 'bg-[#1E293B] text-[#e2e8f0]'
+						} rounded-md px-3 py-1 h-6 w w-fit justify-self-center mr-1`}
+						onClick={() => handleGenreChange(genre)}
+					>
+						<p className="whitespace-nowrap text-xs">{genre}</p>
+					</button>
+				))}
+			</div>
+			<div className="flex gap-2">
+				<Toggle className="w-fit bg-muted">Favoritos</Toggle>
 				<button
-					key={genre}
-					value={genre}
-					className={`${
-						selectedGenre === genre
-							? 'bg-blue-500 text-white'
-							: 'bg-[#1E293B] text-[#e2e8f0]'
-					} rounded-md px-3 py-1 h-6 w w-fit justify-self-center mr-1`}
-					onClick={() => handleGenreChange(genre)}
+					className="w-fit bg-muted flex items-center justify-center rounded-md px-2"
+					onClick={handleSortClick}
 				>
-					<p className="whitespace-nowrap text-xs">{genre}</p>
+					Ordenar por nota
+					{isAscending ? (
+						<CaretDown className="ml-2" size={24} weight="fill" />
+					) : (
+						<CaretUp className="ml-2" size={24} weight="fill" />
+					)}
 				</button>
-			))}
+			</div>
 		</div>
 	);
 };

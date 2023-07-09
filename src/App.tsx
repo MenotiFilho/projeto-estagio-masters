@@ -4,6 +4,10 @@ import SearchBar from './components/SearchBar';
 import GameGrid from './components/GameGrid';
 import GenreFilter from './components/GenreFilter';
 import { Oval } from 'react-loader-spinner';
+import NavBar from './components/NavBar';
+import { Toaster } from './components/ui/toaster';
+import { auth, db } from './firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 type Game = {
 	id: number;
@@ -71,7 +75,9 @@ const App: React.FC = () => {
 		let filteredGames = games;
 
 		if (selectedGenre && selectedGenre !== 'Todos') {
-			filteredGames = filteredGames.filter((game) => game.genre === selectedGenre);
+			filteredGames = filteredGames.filter(
+				(game) => game.genre === selectedGenre
+			);
 		}
 
 		if (searchTerm) {
@@ -92,10 +98,53 @@ const App: React.FC = () => {
 		setSelectedGenre(genre);
 	};
 
+	useEffect(() => {
+		const loadUserFavoritesAndRatings = async () => {
+			const user = auth.currentUser;
+			if (user) {
+				try {
+					// Carrega os favoritos do usuário
+					const favoritesQuery = query(
+						collection(db, 'users', user.uid, 'favorites')
+					);
+					const favoritesSnapshot = await getDocs(favoritesQuery);
+					const userFavorites = favoritesSnapshot.docs.map((doc) => doc.data());
+
+					// Carrega as notas do usuário
+					const ratingsQuery = query(
+						collection(db, 'games'),
+						where(user.uid, '==', true)
+					);
+					const ratingsSnapshot = await getDocs(ratingsQuery);
+					const userRatings = ratingsSnapshot.docs.map((doc) => doc.data());
+
+					// Utilize as informações de favoritos e notas como desejar
+					console.log('Favoritos do usuário:', userFavorites);
+					console.log('Notas do usuário:', userRatings);
+				} catch (error) {
+					console.error(
+						'Erro ao carregar favoritos e notas do usuário:',
+						error
+					);
+				}
+			}
+		};
+
+		// Chama a função ao fazer login
+		const unsubscribe = auth.onAuthStateChanged((user) => {
+			if (user) {
+				loadUserFavoritesAndRatings();
+			}
+		});
+
+		return () => unsubscribe();
+	}, []);
+
 	return (
-		<div className="bg-[#0F172A] text-[#e2e8f0] p-2 mb-4 mt-1 mx-2 flex justify-center content-center ">
+		<div className="bg-[#0F172A] text-[#e2e8f0]  mb-4 mx-2 flex flex-col justify-center content-center ">
+			<NavBar />
 			{loading ? (
-				<div>
+				<div className="w-screen h-screen flex items-center justify-center">
 					<Oval
 						height={80}
 						width={80}
@@ -110,10 +159,13 @@ const App: React.FC = () => {
 					/>
 				</div>
 			) : error ? (
-				<div>{error}</div>
+				<div className="flex items-center justify-center">{error}</div>
 			) : (
-				<div className="flex flex-col gap-5 justify-center items-center">
-					<SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+				<div className="flex flex-col max-w-7xl gap-5 justify-center items-center mx-auto">
+					<SearchBar
+						searchTerm={searchTerm}
+						onSearchChange={handleSearchChange}
+					/>
 					<GenreFilter
 						selectedGenre={selectedGenre}
 						onGenreChange={handleGenreChange}
@@ -122,6 +174,7 @@ const App: React.FC = () => {
 					<GameGrid games={filteredGames} />
 				</div>
 			)}
+			<Toaster />
 		</div>
 	);
 };
