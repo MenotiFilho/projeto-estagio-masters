@@ -92,12 +92,8 @@ const App: React.FC = () => {
 			);
 		}
 
-		if (showFavorites) {
-			filteredGames = filteredGames.filter((game) => game.favorite);
-		}
-
 		setFilteredGames(filteredGames);
-	}, [games, selectedGenre, searchTerm, showFavorites]);
+	}, [games, selectedGenre, searchTerm]);
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchTerm(event.target.value);
