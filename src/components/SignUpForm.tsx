@@ -31,7 +31,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 					.catch((error) => {
 						console.log('Error updating display name:', error);
 					});
-
+				console.log(username);
 				onSignUpSuccess(displayName);
 			})
 			.catch((error) => {
