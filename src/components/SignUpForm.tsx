@@ -13,6 +13,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
 
 	const onSignUp = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -24,13 +25,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 				const displayName = user.displayName ?? ''; // Verificação de nulidade
 				updateProfile(user, {
 					displayName: displayName,
-				})
-					.then(() => {
-						console.log('Display name updated successfully');
-					})
-					.catch((error) => {
-						console.log('Error updating display name:', error);
-					});
+				});
 				console.log(username);
 				onSignUpSuccess(displayName);
 			})
@@ -38,6 +33,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 				const errorCode = error.code;
 				const errorMessage = error.message;
 				console.log(errorCode, errorMessage);
+				setErrorMessage(error.message);
 			});
 	};
 
@@ -98,6 +94,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 					<span className="relative">Sign Up</span>
 				</button>
 			</form>
+			{errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
 		</div>
 	);
 }

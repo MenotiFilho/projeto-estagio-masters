@@ -8,6 +8,9 @@ import NavBar from './components/NavBar';
 import { Toaster } from './components/ui/toaster';
 import { auth, db } from './firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import FavoriteFilter from './components/FavoriteFilter';
+import Ascend from './components/Ascend';
+import { Separator } from './components/ui/separator';
 
 type Game = {
 	id: number;
@@ -148,6 +151,26 @@ const App: React.FC = () => {
 	return (
 		<div className="bg-[#0F172A] text-[#e2e8f0]  mb-4 mx-2 flex flex-col justify-center content-center ">
 			<NavBar />
+			<div className="flex flex-col max-w-7xl gap-2 justify-center items-center mx-auto w-full">
+				<SearchBar
+					searchTerm={searchTerm}
+					onSearchChange={handleSearchChange}
+				/>
+
+				<div className="flex flex-col w-full justify-start items-center gap-1 ">
+					<GenreFilter
+						selectedGenre={selectedGenre}
+						onGenreChange={handleGenreChange}
+						games={games}
+					/>
+					<div className="flex gap-1 justify-start items-start w-full ">
+						<FavoriteFilter />
+						<Ascend />
+					</div>
+					<Separator className="my-3" />
+				</div>
+				<Toaster />
+			</div>
 			{loading ? (
 				<div className="w-screen h-screen flex items-center justify-center">
 					<Oval
@@ -166,20 +189,10 @@ const App: React.FC = () => {
 			) : error ? (
 				<div className="flex items-center justify-center">{error}</div>
 			) : (
-				<div className="flex flex-col max-w-7xl gap-5 justify-center items-center mx-auto">
-					<SearchBar
-						searchTerm={searchTerm}
-						onSearchChange={handleSearchChange}
-					/>
-					<GenreFilter
-						selectedGenre={selectedGenre}
-						onGenreChange={handleGenreChange}
-						games={games}
-					/>
+				<div className="flex items-center justify-center">
 					<GameGrid games={filteredGames} />
 				</div>
 			)}
-			<Toaster />
 		</div>
 	);
 };
