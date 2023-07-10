@@ -171,7 +171,7 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 	};
 
 	return (
-		<div className="game-card bg-[#1E293B] shadow-lg shadow-[#121924] rounded-lg p-4 pb-2 flex flex-col justify-between items-center w-full">
+		<div className="game-card bg-[#1E293B] rounded-lg p-4 pb-2 flex flex-col justify-between items-center w-full">
 			<div className=" flex flex-col">
 				<img
 					className="w-auto mb-4 rounded"
