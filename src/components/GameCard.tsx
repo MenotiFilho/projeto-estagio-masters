@@ -25,48 +25,29 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 	const { toast } = useToast();
 
 	useEffect(() => {
-		const fetchFavoriteData = async () => {
+		const fetchData = async () => {
 			const user = auth.currentUser;
 			if (user) {
 				try {
-					const favoriteRef = doc(
-						collection(db, 'users', user.uid, 'favorites'),
-						String(game.title)
+					const gameRef = doc(
+						collection(db, 'users', user.uid, 'games'),
+						String(game.id)
 					);
-					const favoriteDoc = await getDoc(favoriteRef);
-					if (favoriteDoc.exists()) {
-						const favoriteData = favoriteDoc.data();
-						setFavorite(favoriteData.favorite);
+					const gameDoc = await getDoc(gameRef);
+					if (gameDoc.exists()) {
+						const gameData = gameDoc.data();
+						setFavorite(gameData.favorite);
+						setRating(gameData.rating);
 					}
 				} catch (error) {
-					console.error('Error fetching favorite data:', error);
-				}
-			}
-		};
-
-		const fetchRatingData = async () => {
-			const user = auth.currentUser;
-			if (user) {
-				try {
-					const ratingRef = doc(
-						collection(db, 'games', String(game.title), 'ratings'),
-						user.uid
-					);
-					const ratingDoc = await getDoc(ratingRef);
-					if (ratingDoc.exists()) {
-						const ratingData = ratingDoc.data();
-						setRating(ratingData.rating);
-					}
-				} catch (error) {
-					console.error('Error fetching rating data:', error);
+					console.error('Error fetching game data:', error);
 				}
 			}
 		};
 
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
-				fetchFavoriteData();
-				fetchRatingData();
+				fetchData();
 			} else {
 				setFavorite(false);
 				setRating(0);
@@ -80,27 +61,30 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 		const user = auth.currentUser;
 		if (user) {
 			try {
-				const favoriteRef = doc(
-					collection(db, 'users', user.uid, 'favorites'),
-					String(game.title)
+				const gameRef = doc(
+					collection(db, 'users', user.uid, 'games'),
+					String(game.id)
 				);
-				if (favorite) {
-					await setDoc(favoriteRef, {
-						name: game.title,
-						favorite: false,
+				const gameDoc = await getDoc(gameRef);
+				if (gameDoc.exists()) {
+					const gameData = gameDoc.data();
+					await setDoc(gameRef, {
+						...gameData,
+						favorite: !gameData.favorite,
 					});
+					setFavorite(!gameData.favorite);
 				} else {
-					await setDoc(favoriteRef, {
+					await setDoc(gameRef, {
 						name: game.title,
 						favorite: true,
+						rating: rating,
 					});
+					setFavorite(true);
 				}
-				setFavorite(!favorite);
 			} catch (error) {
 				console.error('Error adding/removing favorite:', error);
 			}
-		}
-		if (!user) {
+		} else {
 			toast({
 				title: 'Faça o login',
 				description: 'Faça o login para poder favoritar os jogos.',
@@ -113,20 +97,30 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 		const user = auth.currentUser;
 		if (user) {
 			try {
-				const ratingRef = doc(
-					collection(db, 'games', String(game.title), 'ratings'),
-					user.uid
+				const gameRef = doc(
+					collection(db, 'users', user.uid, 'games'),
+					String(game.id)
 				);
-				await setDoc(ratingRef, {
-					name: game.title,
-					rating: selectedRating,
-				});
-				setRating(selectedRating);
+				const gameDoc = await getDoc(gameRef);
+				if (gameDoc.exists()) {
+					const gameData = gameDoc.data();
+					await setDoc(gameRef, {
+						...gameData,
+						rating: selectedRating,
+					});
+					setRating(selectedRating);
+				} else {
+					await setDoc(gameRef, {
+						name: game.title,
+						favorite: favorite,
+						rating: selectedRating,
+					});
+					setRating(selectedRating);
+				}
 			} catch (error) {
 				console.error('Error adding game rating:', error);
 			}
-		}
-		if (!user) {
+		} else {
 			toast({
 				title: 'Faça o login',
 				description: 'Faça o login para poder avaliar os jogos.',

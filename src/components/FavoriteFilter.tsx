@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-function FavoriteFilter() {
+function FavoriteFilter(onFavSelect) {
 	const [isFavoriteActive, setIsFavoriteActive] = useState(false);
 
 	const handleFavoriteChange = () => {
 		setIsFavoriteActive(!isFavoriteActive);
+		onFavSelect(!isFavoriteActive);
 	};
 
 	return (

@@ -67,23 +67,23 @@ const NavBar = () => {
 	};
 
 	return (
-		<div>
-			<div className="sticky w-full flex items-center justify-center  h-20">
-				<div className="flex my-2 justify-between mx-2 w-full max-w-7xl">
+		<div className="sticky top-0 bg-[#0F172A] text-[#e2e8f0] z-10">
+			<div className="flex justify-center">
+				<div className="flex  items-center my-2 justify-between mx-2 w-full max-w-7xl">
 					<div className="self-center flex items-center justify-start ">
 						<div className="absolute">
-							<GameController size={50} color="#9333ea" weight="regular" />
+							<GameController size={50} color="#9333ea" weight="duotone" />
 						</div>
 						<div>
 							<GameController size={50} color="#3b82f6 " weight="fill" />
 						</div>
-						<h1 className=" ml-2 cursor-default flex-nowrap w-20 text-center text-sm font-extralight font-mono">
+						<h1 className="ml-2 cursor-default flex-nowrap w-20 text-center text-sm font-extralight font-mono">
 							Projeto de Estágio
 						</h1>
 					</div>
 					{loggedIn ? (
 						<div className="flex flex-col justify-center items-center gap-1">
-							<span className="text-white text-xs lg:text-base  ">
+							<span className="text-white text-xs lg:text-base">
 								Olá, {username ? <span>{username}</span> : <span>{email}</span>}
 							</span>
 							<button

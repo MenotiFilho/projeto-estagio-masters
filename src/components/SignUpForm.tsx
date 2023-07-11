@@ -24,7 +24,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 
 				const displayName = user.displayName ?? ''; // Verificação de nulidade
 				updateProfile(user, {
-					displayName: displayName,
+					displayName: username,
 				});
 				console.log(username);
 				onSignUpSuccess(displayName);
