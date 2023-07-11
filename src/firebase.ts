@@ -18,7 +18,6 @@ import {
 const firebaseConfig = {
 	apiKey: 'AIzaSyALDCoADNu5RgLmwuq2GXq5H07iwBQtzP8',
 	authDomain: 'estagio-masters.firebaseapp.com',
-	databaseURL: 'https://estagio-masters-default-rtdb.firebaseio.com',
 	projectId: 'estagio-masters',
 	storageBucket: 'estagio-masters.appspot.com',
 	messagingSenderId: '422267934459',

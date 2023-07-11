@@ -250,7 +250,7 @@ const App: React.FC = () => {
 				</div>
 			</div>
 			{loading ? (
-				<div className="w-screen h-screen flex items-center justify-center">
+				<div className="w-full flex mt-5 justify-center">
 					<Oval
 						height={80}
 						width={80}
