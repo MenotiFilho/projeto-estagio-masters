@@ -22,6 +22,10 @@ const NavBar = () => {
 	const [username, setUsername] = useState('');
 	const [showLoginDialog, setShowLoginDialog] = useState(false);
 
+	const scrollToTop = () => {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
@@ -70,15 +74,18 @@ const NavBar = () => {
 		<div className="sticky top-0 bg-[#0F172A] text-[#e2e8f0] z-10">
 			<div className="flex justify-center">
 				<div className="flex  items-center my-2 justify-between mx-2 w-full max-w-7xl">
-					<div className="self-center flex items-center justify-start ">
+					<div
+						className="self-center flex items-center justify-start cursor-pointer "
+						onClick={scrollToTop}
+					>
 						<div className="absolute">
 							<GameController size={50} color="#9333ea" weight="duotone" />
 						</div>
 						<div>
 							<GameController size={50} color="#3b82f6 " weight="fill" />
 						</div>
-						<h1 className="ml-2 cursor-default flex-nowrap w-20 text-center text-sm font-extralight font-mono">
-							Projeto de Estágio
+						<h1 className=" ml-3 leading-4 flex-nowrap w-fit text-center text-sm font-extralight font-mono">
+							Game <br /> Vault
 						</h1>
 					</div>
 					{loggedIn ? (
