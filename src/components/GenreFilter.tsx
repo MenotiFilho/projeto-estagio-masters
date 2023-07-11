@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 type Game = {
 	id: number;
@@ -24,18 +24,39 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 		'Todos',
 		...Array.from(new Set(games.map((game) => game.genre))),
 	];
+	const [isTouch, setIsTouch] = useState(false);
 
 	const handleGenreChange = (genre: string) => {
 		if (selectedGenre === genre) {
-			onGenreChange('Todos'); // Desmarcar o gênero
+			onGenreChange('');
 		} else {
 			onGenreChange(genre);
 		}
 	};
 
+	useEffect(() => {
+		const checkIsTouch = () => {
+			if (window.matchMedia('(pointer: coarse)').matches) {
+				setIsTouch(true);
+			} else {
+				setIsTouch(false);
+			}
+		};
+
+		checkIsTouch();
+
+		return () => {
+			// Limpeza do efeito, se necessário
+		};
+	}, []);
+
 	return (
-		<div className="w-full">
-			<div className="">
+		<div className="w-full overflow-x-scroll no-scrollbar sm:overflow-x-scroll">
+			<div
+				className={`${
+					isTouch === true ? 'flex whitespace-nowrap' : ''
+				} inline whitespace-normal`}
+			>
 				{genres.map((genre) => (
 					<button
 						key={genre}
@@ -44,7 +65,7 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 							selectedGenre === genre
 								? 'bg-blue-500 text-white'
 								: 'bg-[#1E293B] text-[#e2e8f0]'
-						} rounded-md px-3 py-1 h-fit w w-fit justify-self-center mr-1 mt-1`}
+						} rounded-md px-3 py-1 h-fit w-fit justify-self-center mr-1 mt-1`}
 						onClick={() => handleGenreChange(genre)}
 					>
 						<p className="whitespace-nowrap">{genre}</p>
