@@ -26,7 +26,11 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 	];
 
 	const handleGenreChange = (genre: string) => {
-		onGenreChange(genre);
+		if (selectedGenre === genre) {
+			onGenreChange('Todos'); // Desmarcar o gênero
+		} else {
+			onGenreChange(genre);
+		}
 	};
 
 	return (

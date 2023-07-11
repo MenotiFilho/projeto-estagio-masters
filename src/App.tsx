@@ -35,7 +35,7 @@ const App: React.FC = () => {
 	const [error, setError] = useState<string | undefined>(undefined);
 
 	const [searchTerm, setSearchTerm] = useState<string>('');
-	const [selectedGenre, setSelectedGenre] = useState<string>('');
+	const [selectedGenre, setSelectedGenre] = useState<string>('Todos');
 	const [isFavoriteActive, setIsFavoriteActive] = useState(false);
 
 	const { toast } = useToast();
