@@ -51,7 +51,7 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 	}, []);
 
 	return (
-		<div className="w-full overflow-x-scroll no-scrollbar sm:overflow-x-scroll">
+		<div className="w-full  flex overflow-x-scroll no-scrollbar sm:overflow-x-scroll">
 			<div
 				className={`${
 					isTouch === true ? 'flex whitespace-nowrap' : ''
@@ -72,6 +72,9 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 					</button>
 				))}
 			</div>
+			{isTouch ? (
+				<div className="bg-gradient-to-r from-transparent to-[#0F172A] pointer-events-none w-20 h-10 fixed right-0 ml-auto mr-1"></div>
+			) : null}
 		</div>
 	);
 };
