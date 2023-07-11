@@ -20,7 +20,7 @@ const NavBar = () => {
 	const [loggedIn, setLoggedIn] = useState(false);
 	const [email, setEmail] = useState('');
 	const [username, setUsername] = useState('');
-	const [showLoginDialog, setShowLoginDialog] = useState(false); // State for dialog visibility
+	const [showLoginDialog, setShowLoginDialog] = useState(false);
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
