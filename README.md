@@ -8,6 +8,7 @@ Projeto realizado para o processo seletivo de estagio Frontend React para a App 
 ![Usabilidade mobile](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/3b7430d6-793b-4c6b-9b5b-5c366dd234b1)
 
 
+![Usabilidade Web)](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/d16b41c8-90f3-418a-aad7-74442798a8bd)
 
 
 
