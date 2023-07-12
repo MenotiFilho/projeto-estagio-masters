@@ -1,3 +1,5 @@
+
+https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/c8301935-0dcf-44c5-bc91-51f0a8821da4
 # Projeto Estagio App Masters
 Projeto realizado para o processo seletivo de estagio Frontend React para a App Masters
 
@@ -9,3 +11,13 @@ Projeto realizado para o processo seletivo de estagio Frontend React para a App 
 ![Captura de tela 2023-06-22 175508](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/a89e4d90-c258-4864-8b25-760b257bedf1)
 
 ![Captura de tela 2023-06-22 175442](https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/98511e9d-4e4e-45b7-a9b0-c50f35e5e62b)
+
+
+
+https://github.com/MenotiFilho/projeto-estagio-masters/assets/15065468/d6ac7dfd-3ce0-4299-9e9a-ede8d4a5518b
+
+
+
+
+
+
