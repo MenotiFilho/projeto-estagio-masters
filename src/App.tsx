@@ -9,15 +9,17 @@ import { Toaster } from './components/ui/toaster';
 import { auth, db } from './firebase';
 import {
 	collection,
+	doc,
+	getDoc,
 	getDocs,
 	getFirestore,
 	query,
 	where,
 } from 'firebase/firestore';
-import Ascend from './components/Ascend';
 import { Separator } from './components/ui/separator';
 import { useToast } from './components/ui/use-toast';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import { CaretDown, CaretUp } from '@phosphor-icons/react';
 
 type Game = {
 	id: number;
@@ -25,7 +27,8 @@ type Game = {
 	thumbnail: string;
 	short_description: string;
 	genre: string;
-	favorite: boolean; // Add the favorite property
+	favorite: boolean;
+	rating: number;
 };
 
 const App: React.FC = () => {
@@ -37,6 +40,7 @@ const App: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useState<string>('');
 	const [selectedGenre, setSelectedGenre] = useState<string>('Todos');
 	const [isFavoriteActive, setIsFavoriteActive] = useState(false);
+	const [isAscending, setIsAscending] = useState(false);
 
 	const { toast } = useToast();
 
@@ -56,7 +60,27 @@ const App: React.FC = () => {
 
 			const gamesFetched = response.data.map((game: Game) => ({
 				...game,
+				favorite: false,
+				rating: 0,
 			}));
+
+			const user = auth.currentUser;
+			if (user) {
+				const userId = user.uid;
+				for (const game of gamesFetched) {
+					const gameRef = doc(
+						collection(db, 'users', userId, 'games'),
+						String(game.id)
+					);
+					const gameDoc = await getDoc(gameRef);
+					if (gameDoc.exists()) {
+						const gameData = gameDoc.data();
+						game.favorite = gameData.favorite || false;
+						game.rating = gameData.rating || 0;
+					}
+				}
+			}
+
 			setGames(gamesFetched);
 			setLoading(false);
 		} catch (error) {
@@ -163,47 +187,27 @@ const App: React.FC = () => {
 		setIsFavoriteActive(!isFavoriteActive);
 	};
 
-	useEffect(() => {
-		const loadUserFavoritesAndRatings = async () => {
-			const user = auth.currentUser;
-			if (user) {
-				try {
-					// Carrega os favoritos do usuário
-					const favoritesQuery = query(
-						collection(db, 'users', user.uid, 'favorites')
-					);
-					const favoritesSnapshot = await getDocs(favoritesQuery);
-					const userFavorites = favoritesSnapshot.docs.map((doc) => doc.data());
+	const handleSortClick = () => {
+		setIsAscending(!isAscending);
 
-					// Carrega as notas do usuário
-					const ratingsQuery = query(
-						collection(db, 'games'),
-						where(user.uid, '==', true)
-					);
-					const ratingsSnapshot = await getDocs(ratingsQuery);
-					const userRatings = ratingsSnapshot.docs.map((doc) => doc.data());
+		setFilteredGames((prevFilteredGames) => {
+			const ratedGames = prevFilteredGames.filter((game) => game.rating !== 0);
+			const unratedGames = prevFilteredGames.filter(
+				(game) => game.rating === 0
+			);
 
-					// Utilize as informações de favoritos e notas como desejar
-					console.log('Favoritos do usuário:', userFavorites);
-					console.log('Notas do usuário:', userRatings);
-				} catch (error) {
-					console.error(
-						'Erro ao carregar favoritos e notas do usuário:',
-						error
-					);
-				}
+			if (isAscending) {
+				ratedGames.sort((a, b) => a.rating - b.rating);
+				unratedGames.sort((a, b) => a.title.localeCompare(b.title));
+			} else {
+				ratedGames.sort((a, b) => b.rating - a.rating);
+				unratedGames.sort((a, b) => a.title.localeCompare(b.title));
 			}
-		};
 
-		// Chama a função ao fazer login
-		const unsubscribe = auth.onAuthStateChanged((user) => {
-			if (user) {
-				loadUserFavoritesAndRatings();
-			}
+			const sortedGames = [...ratedGames, ...unratedGames];
+			return sortedGames;
 		});
-
-		return () => unsubscribe();
-	}, []);
+	};
 
 	const handleRetryFetch = () => {
 		setLoading(true);
@@ -244,7 +248,21 @@ const App: React.FC = () => {
 								</button>
 							)}
 						</div>
-						<Ascend />
+						<div>
+							<div className="flex gap-1">
+								<button
+									className="bg-[#1E293B] rounded-md px-3 py-1 h-fit text-lg flex items-center justify-center"
+									onClick={handleSortClick}
+								>
+									Ordenar por nota
+									{isAscending ? (
+										<CaretDown className="ml-2" size={20} weight="fill" />
+									) : (
+										<CaretUp className="ml-2" size={20} weight="fill" />
+									)}
+								</button>
+							</div>
+						</div>
 					</div>
 					<Separator className="my-3" />
 				</div>

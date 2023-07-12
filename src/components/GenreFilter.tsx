@@ -73,7 +73,7 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 				))}
 			</div>
 			{isTouch ? (
-				<div className="bg-gradient-to-r from-transparent to-[#0F172A]/70 pointer-events-none w-20 h-10 fixed right-0 ml-auto mr-1"></div>
+				<div className="bg-gradient-to-r from-transparent to-[#0F172A]/70 pointer-events-none w-20 h-10 absolute right-0 ml-auto mr-1"></div>
 			) : null}
 		</div>
 	);

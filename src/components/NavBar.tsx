@@ -39,7 +39,6 @@ const NavBar = () => {
 			} else {
 				setLoggedIn(false);
 				setEmail('');
-				console.log(email);
 				setUsername('');
 			}
 		});
