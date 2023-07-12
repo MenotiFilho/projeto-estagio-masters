@@ -44,10 +44,6 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 		};
 
 		checkIsTouch();
-
-		return () => {
-			// Limpeza do efeito, se necessário
-		};
 	}, []);
 
 	return (

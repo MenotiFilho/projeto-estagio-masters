@@ -16,10 +16,8 @@ function LoginForm({ onLoginSuccess }: LoginFormProps) {
 
 		signInWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
-				// Signed in
 				const user = userCredential.user;
-				console.log(user);
-				const displayName = user.displayName ?? ''; // Verificação de nulidade
+				const displayName = user.displayName ?? '';
 				onLoginSuccess(displayName);
 			})
 			.catch((error) => {
