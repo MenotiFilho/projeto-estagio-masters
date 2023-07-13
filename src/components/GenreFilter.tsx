@@ -28,7 +28,7 @@ const GenreFilter: React.FC<GenreFilterProps> = ({
 
 	const handleGenreChange = (genre: string) => {
 		if (selectedGenre === genre) {
-			onGenreChange('');
+			onGenreChange('Todos');
 		} else {
 			onGenreChange(genre);
 		}

@@ -1,5 +1,6 @@
 import { auth, signInWithEmailAndPassword } from '../firebase';
 import { useState } from 'react';
+import { EyeClosed, Eye } from '@phosphor-icons/react';
 
 interface LoginFormProps {
 	onLoginSuccess: (displayName: string) => void;
@@ -9,10 +10,21 @@ function LoginForm({ onLoginSuccess }: LoginFormProps) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
+	const [showPassword, setShowPassword] = useState(false);
+
+	const validateEmail = (email: string): boolean => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	};
 
 	const onLogin = (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrorMessage('');
+
+		if (!validateEmail(email)) {
+			setErrorMessage('Formato de email inválido');
+			return;
+		}
 
 		signInWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
@@ -21,10 +33,14 @@ function LoginForm({ onLoginSuccess }: LoginFormProps) {
 				onLoginSuccess(displayName);
 			})
 			.catch((error) => {
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				setErrorMessage(errorMessage);
-				console.log(errorCode, errorMessage);
+				if (
+					error.message === 'Firebase: Error (auth/wrong-password).' ||
+					error.message === 'Firebase: Error (auth/user-not-found).'
+				) {
+					setErrorMessage('Email ou senha incorretos');
+				} else {
+					setErrorMessage(error.message);
+				}
 			});
 	};
 
@@ -49,15 +65,33 @@ function LoginForm({ onLoginSuccess }: LoginFormProps) {
 					<label htmlFor="password" className="block text-gray-200">
 						Password
 					</label>
-					<input
-						id="password"
-						name="password"
-						type="password"
-						required
-						placeholder="Password"
-						onChange={(e) => setPassword(e.target.value)}
-						className="w-full mt-2 px-4 py-2 border border-gray-200  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
-					/>
+					<div className="flex rounded-md mt-2 focus-within:ring-2 focus-within:ring-blue-500/70 focus-within:border-transparent">
+						<input
+							id="password"
+							name="password"
+							type={showPassword ? 'text' : 'password'}
+							required
+							placeholder="Senha"
+							onChange={(e) => setPassword(e.target.value)}
+							className="w-full px-4 py-2 border border-gray-200 rounded-l-md border-r-0 focus:outline-none focus:ring-0 focus:border-transparent text-black"
+						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className=" rounded-md rounded-l-none bg-white flex items-center  "
+						>
+							{showPassword ? (
+								<Eye className="mr-3" size={26} color="black" weight="light" />
+							) : (
+								<EyeClosed
+									className="mr-3"
+									size={26}
+									color="black"
+									weight="light"
+								/>
+							)}
+						</button>
+					</div>
 				</div>
 				<button
 					onClick={onLogin}

@@ -6,16 +6,30 @@ function ResetPasswordForm() {
 	const [isEmailSent, setIsEmailSent] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 
+	const validateEmail = (email: string): boolean => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	};
+
 	const handleResetPassword = (e: React.FormEvent) => {
 		e.preventDefault();
 		setErrorMessage('');
+
+		if (!validateEmail(email)) {
+			setErrorMessage('Formato de email inválido');
+			return;
+		}
 
 		sendPasswordResetEmail(auth, email)
 			.then(() => {
 				setIsEmailSent(true);
 			})
 			.catch((error) => {
-				setErrorMessage(error.message);
+				if (error.message === 'Firebase: Error (auth/user-not-found).') {
+					setErrorMessage('Email não encontrado');
+				} else {
+					setErrorMessage(error.message);
+				}
 			});
 	};
 
@@ -36,6 +50,7 @@ function ResetPasswordForm() {
 						required
 					/>
 				</div>
+
 				{isEmailSent ? (
 					<p className="text-green-500 mt-2">
 						Um email com as intruções para redefenir sua senha foi enviado ao

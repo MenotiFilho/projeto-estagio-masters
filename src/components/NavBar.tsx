@@ -106,10 +106,10 @@ const NavBar = () => {
 						</div>
 					) : (
 						<div className="flex flex-col gap-1">
-							<div className="flex gap-2">
+							<div className="flex items-center justify-center gap-2">
 								<Dialog>
 									<DialogTrigger>
-										<span className="relative rounded group text-white inline-block w-full p-1">
+										<span className="relative rounded group text-white text-sm lg:text-sm p-1 inline-block w-full">
 											<span className="absolute top-0 left-0 w-full h-full rounded opacity-50 filter blur-sm bg-gradient-to-br from-purple-600 to-blue-500"></span>
 											<span className="h-full w-full inset-0 absolute mt-0.5 ml-0.5 bg-gradient-to-br filter group-active:opacity-0 rounded opacity-50 from-purple-600 to-blue-500"></span>
 											<span className="absolute inset-0 w-full h-full transition-all duration-200 ease-out rounded shadow-xl bg-gradient-to-br filter group-active:opacity-0 group-hover:blur-sm from-purple-600 to-blue-500"></span>
@@ -127,7 +127,7 @@ const NavBar = () => {
 								</Dialog>
 								<Dialog>
 									<DialogTrigger>
-										<span className="relative rounded group text-white inline-block w-full p-1">
+										<span className="relative rounded group text-white text-sm lg:text-sm inline-block w-full p-1">
 											<span className="absolute top-0 left-0 w-full h-full rounded opacity-50 filter blur-sm bg-gradient-to-br from-purple-600 to-blue-500"></span>
 											<span className="h-full w-full inset-0 absolute mt-0.5 ml-0.5 bg-gradient-to-br filter group-active:opacity-0 rounded opacity-50 from-purple-600 to-blue-500"></span>
 											<span className="absolute inset-0 w-full h-full transition-all duration-200 ease-out rounded shadow-xl bg-gradient-to-br filter group-active:opacity-0 group-hover:blur-sm from-purple-600 to-blue-500"></span>
@@ -146,8 +146,8 @@ const NavBar = () => {
 								</Dialog>
 							</div>
 							<Dialog>
-								<DialogTrigger>
-									<span className="opacity-60 hover:opacity-100">
+								<DialogTrigger className="h-fit -mt-1 lg:-m-1.5">
+									<span className="opacity-60 hover:opacity-100 text-xs lg:text-xs">
 										Esqueci minha senha
 									</span>
 								</DialogTrigger>
