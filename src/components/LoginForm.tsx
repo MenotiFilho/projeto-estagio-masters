@@ -76,6 +76,7 @@ function LoginForm({ onLoginSuccess }: LoginFormProps) {
 							className="w-full px-4 py-2 border border-gray-200 rounded-l-md border-r-0 focus:outline-none focus:ring-0 focus:border-transparent text-black"
 						/>
 						<button
+							tabIndex={-1}
 							type="button"
 							onClick={() => setShowPassword(!showPassword)}
 							className=" rounded-md rounded-l-none bg-white flex items-center  "

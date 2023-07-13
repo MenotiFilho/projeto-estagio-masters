@@ -55,12 +55,16 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 				const user = userCredential.user;
 				console.log(user);
 
-				const displayName = user.displayName ?? '';
+				const displayName = username;
 				updateProfile(user, {
-					displayName: username,
-				});
-				console.log(username);
-				onSignUpSuccess(displayName);
+					displayName: displayName,
+				})
+					.then(() => {
+						onSignUpSuccess(displayName);
+					})
+					.catch((error) => {
+						console.error(error);
+					});
 			})
 			.catch((error) => {
 				const errorCode = error.code;
@@ -116,6 +120,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 							className="w-full px-4 py-2 border border-gray-200 rounded-l-md border-r-0 focus:outline-none focus:ring-0 focus:border-transparent text-black"
 						/>
 						<button
+							tabIndex={-1}
 							type="button"
 							onClick={() => setShowPassword(!showPassword)}
 							className="rounded-md rounded-l-none bg-white flex items-center"
@@ -148,6 +153,7 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 							className="w-full px-4 py-2 focus:outline-none focus:ring-0 border border-gray-200 rounded-l-md border-r-0 focus:border-transparent text-black"
 						/>
 						<button
+							tabIndex={-1}
 							type="button"
 							onClick={() => setShowConfirmPassword(!showConfirmPassword)}
 							className="rounded-md rounded-l-none bg-white flex items-center"

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import LoginForm from './LoginForm';
 import {
 	Dialog,
@@ -9,12 +8,13 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog';
 import SignUpForm from './SignUpForm';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { auth, signOut } from '@/firebase';
 import ResetPasswordForm from './PasswordForm';
 import { onAuthStateChanged } from 'firebase/auth';
 import { GameController } from '@phosphor-icons/react';
 import { Separator } from './ui/separator';
+import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 	const [loggedIn, setLoggedIn] = useState(false);
@@ -25,6 +25,8 @@ const NavBar = () => {
 	const scrollToTop = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -44,19 +46,21 @@ const NavBar = () => {
 		});
 
 		return () => unsubscribe();
-	}, [email]);
+	}, []);
 
 	const handleLoginSuccess = () => {
 		setLoggedIn(true);
 		setShowLoginDialog(false);
 		console.log(showLoginDialog);
+		navigate('/');
 	};
 
-	const handleSignUpSuccess = () => {
+	const handleSignUpSuccess = (displayName: SetStateAction<string>) => {
 		setLoggedIn(true);
 		setShowLoginDialog(false);
+		setUsername(displayName);
+		navigate('/');
 	};
-
 	const handleLogout = () => {
 		signOut(auth)
 			.then(() => {
@@ -90,7 +94,7 @@ const NavBar = () => {
 					{loggedIn ? (
 						<div className="flex flex-col justify-center items-center gap-1">
 							<span className="text-white text-xs lg:text-base">
-								Olá, {username ? <span>{username}</span> : <span>{email}</span>}
+								Olá, {username}
 							</span>
 							<button
 								onClick={handleLogout}
@@ -109,7 +113,10 @@ const NavBar = () => {
 							<div className="flex items-center justify-center gap-2">
 								<Dialog>
 									<DialogTrigger>
-										<span className="relative rounded group text-white text-sm lg:text-sm p-1 inline-block w-full">
+										<span
+											onClick={() => navigate('/auth/')}
+											className="relative rounded group text-white text-sm lg:text-sm p-1 inline-block w-full"
+										>
 											<span className="absolute top-0 left-0 w-full h-full rounded opacity-50 filter blur-sm bg-gradient-to-br from-purple-600 to-blue-500"></span>
 											<span className="h-full w-full inset-0 absolute mt-0.5 ml-0.5 bg-gradient-to-br filter group-active:opacity-0 rounded opacity-50 from-purple-600 to-blue-500"></span>
 											<span className="absolute inset-0 w-full h-full transition-all duration-200 ease-out rounded shadow-xl bg-gradient-to-br filter group-active:opacity-0 group-hover:blur-sm from-purple-600 to-blue-500"></span>
@@ -127,7 +134,10 @@ const NavBar = () => {
 								</Dialog>
 								<Dialog>
 									<DialogTrigger>
-										<span className="relative rounded group text-white text-sm lg:text-sm inline-block w-full p-1">
+										<span
+											onClick={() => navigate('/auth/')}
+											className="relative rounded group text-white text-sm lg:text-sm inline-block w-full p-1"
+										>
 											<span className="absolute top-0 left-0 w-full h-full rounded opacity-50 filter blur-sm bg-gradient-to-br from-purple-600 to-blue-500"></span>
 											<span className="h-full w-full inset-0 absolute mt-0.5 ml-0.5 bg-gradient-to-br filter group-active:opacity-0 rounded opacity-50 from-purple-600 to-blue-500"></span>
 											<span className="absolute inset-0 w-full h-full transition-all duration-200 ease-out rounded shadow-xl bg-gradient-to-br filter group-active:opacity-0 group-hover:blur-sm from-purple-600 to-blue-500"></span>
