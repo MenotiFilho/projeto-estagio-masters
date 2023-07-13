@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 
 const NavBar = () => {
 	const [loggedIn, setLoggedIn] = useState(false);
-	const [email, setEmail] = useState('');
 	const [username, setUsername] = useState('');
 	const [showLoginDialog, setShowLoginDialog] = useState(false);
 
@@ -34,13 +33,10 @@ const NavBar = () => {
 				if (user.displayName) {
 					setUsername(user.displayName);
 				}
-				if (user.email) {
-					setEmail(user.email);
-				}
+
 				setLoggedIn(true);
 			} else {
 				setLoggedIn(false);
-				setEmail('');
 				setUsername('');
 			}
 		});
@@ -65,7 +61,6 @@ const NavBar = () => {
 		signOut(auth)
 			.then(() => {
 				setLoggedIn(false);
-				setEmail('');
 				setUsername('');
 			})
 			.catch((error) => {

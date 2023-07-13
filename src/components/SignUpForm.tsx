@@ -53,7 +53,6 @@ function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
 		createUserWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
 				const user = userCredential.user;
-				console.log(user);
 
 				const displayName = username;
 				updateProfile(user, {
