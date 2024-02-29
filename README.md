@@ -3,7 +3,7 @@
 Projeto realizado para o processo seletivo de estagio Frontend React para a App Masters
 
 # Link do [Deploy](https://projeto-estagio-masters.vercel.app/)
-Site não funcionando corretamente, necessário mudar api que esta sendo consumida pois a mesmo não está mais dispovinel.
+Site não funcionando corretamente, necessário mudar api que esta sendo consumida pois a mesmo não está mais dispovinel. Funcionalidades de sign up e login funcionam.
 
 # Usabilidade no web e mobile
 
