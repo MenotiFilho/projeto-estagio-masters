@@ -2,7 +2,7 @@
 
 Projeto realizado para o processo seletivo de estagio Frontend React para a App Masters
 
-# Link do [Deploy]([https://gamevault-masters.vercel.app/](https://projeto-estagio-masters.vercel.app/))
+# Link do [Deploy]([https://gamevault-masters.vercel.app/](https://projeto-estagio-masters.vercel.app/)])
 
 # Usabilidade no web e mobile
 
