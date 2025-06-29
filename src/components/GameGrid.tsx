@@ -2,14 +2,14 @@ import React from 'react';
 import GameCard from './GameCard';
 
 type Game = {
-	id: number;
-	title: string;
-	thumbnail: string;
-	short_description: string;
-	genre: string;
-	favorite: boolean;
+  id: number;
+  title: string;
+  thumbnail: string;
+  short_description: string;
+  genre: string;
+  favorite: boolean;
+  rating: number;  // Adicionando rating ao tipo Game
 };
-
 type GameGridProps = {
 	games: Game[];
 };
