@@ -12,7 +12,7 @@ type Game = {
   short_description: string;
   genre: string;
   favorite: boolean;
-  rating: number;  // Adicionando rating ao tipo Game
+  rating: number;
 };
 
 type GameCardProps = {
@@ -25,99 +25,57 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
 
   const { toast } = useToast();
 
-  // Requisição para buscar o estado de favorito e rating no Firebase
   useEffect(() => {
-    const fetchData = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const gameRef = doc(collection(db, 'users', user.uid, 'games'), String(game.id));
-        const gameDoc = await getDoc(gameRef);
-        if (gameDoc.exists()) {
-          const gameData = gameDoc.data();
-          setFavorite(gameData.favorite || false);
-          setRating(gameData.rating || 0);
-        }
-      }
-    };
-
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) fetchData();
-      else {
-        setFavorite(false);
-        setRating(0);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [game]);
+    setFavorite(game.favorite);
+    setRating(game.rating);
+  }, [game.favorite, game.rating]);
 
   const handleFavoriteClick = async () => {
     const user = auth.currentUser;
-    if (user) {
-      const gameRef = doc(collection(db, 'users', user.uid, 'games'), String(game.id));
-      const gameDoc = await getDoc(gameRef);
-      if (gameDoc.exists()) {
-        const gameData = gameDoc.data();
-        await setDoc(gameRef, { ...gameData, favorite: !gameData.favorite });
-        setFavorite(!gameData.favorite);
-      } else {
-        await setDoc(gameRef, { name: game.title, favorite: true, rating });
-        setFavorite(true);
-      }
-    } else {
+    if (!user) {
       toast({
         title: 'Faça o login',
         description: 'Faça o login para poder favoritar os jogos.',
         duration: 3000,
       });
+      return;
+    }
+
+    try {
+      const gameRef = doc(collection(db, 'users', user.uid, 'games'), String(game.id));
+      await setDoc(gameRef, {
+        name: game.title,
+        favorite: !favorite,
+        rating: rating,
+      });
+      setFavorite(!favorite);
+    } catch (error) {
+      console.error('Erro ao atualizar favorito:', error);
     }
   };
 
   const handleRatingClick = async (selectedRating: number) => {
     const user = auth.currentUser;
-    if (user) {
-      const gameRef = doc(collection(db, 'users', user.uid, 'games'), String(game.id));
-      const gameDoc = await getDoc(gameRef);
-      if (gameDoc.exists()) {
-        const gameData = gameDoc.data();
-        await setDoc(gameRef, { ...gameData, rating: selectedRating });
-        setRating(selectedRating);
-      } else {
-        await setDoc(gameRef, { name: game.title, favorite, rating: selectedRating });
-        setRating(selectedRating);
-      }
-    } else {
+    if (!user) {
       toast({
         title: 'Faça o login',
         description: 'Faça o login para poder avaliar os jogos.',
         duration: 3000,
       });
+      return;
     }
-  };
 
-  const renderHeartIcon = () => (
-    <button
-      className={`text-gray-500 transition ease-in-out hover:text-red-500 hover:scale-125 ${favorite ? 'text-red-500' : ''}`}
-      onClick={handleFavoriteClick}
-    >
-      {favorite ? <Heart size={22} color="red" weight="fill" /> : <Heart size={22} />}
-    </button>
-  );
-
-  const renderRatingStars = () => {
-    const stars = [];
-    for (let i = 1; i <= 4; i++) {
-      stars.push(
-        <button
-          key={i}
-          className={`text-gray-500 transition ease-in-out hover:text-yellow-500 hover:scale-125 ${i <= rating ? 'text-yellow-500' : ''}`}
-          onClick={() => handleRatingClick(i)}
-        >
-          {i <= rating ? <Star size={22} weight="fill" /> : <Star size={22} />}
-        </button>
-      );
+    try {
+      const gameRef = doc(collection(db, 'users', user.uid, 'games'), String(game.id));
+      await setDoc(gameRef, {
+        name: game.title,
+        favorite: favorite,
+        rating: selectedRating,
+      });
+      setRating(selectedRating);
+    } catch (error) {
+      console.error('Erro ao atualizar nota:', error);
     }
-    return stars;
   };
 
   return (
@@ -129,8 +87,23 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
       </div>
       <div className="flex flex-col justify-self-end mt-5 w-full">
         <div className="flex justify-between w-full">
-          <div className="flex items-center">{renderHeartIcon()}</div>
-          <div className="flex items-center gap-1">{renderRatingStars()}</div>
+          <button
+            className={`text-gray-500 transition ease-in-out hover:text-red-500 hover:scale-125 ${favorite ? 'text-red-500' : ''}`}
+            onClick={handleFavoriteClick}
+          >
+            {favorite ? <Heart size={22} color="red" weight="fill" /> : <Heart size={22} />}
+          </button>
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4].map((i) => (
+              <button
+                key={i}
+                className={`text-gray-500 transition ease-in-out hover:text-yellow-500 hover:scale-125 ${i <= rating ? 'text-yellow-500' : ''}`}
+                onClick={() => handleRatingClick(i)}
+              >
+                {i <= rating ? <Star size={22} weight="fill" /> : <Star size={22} />}
+              </button>
+            ))}
+          </div>
         </div>
         <p className="text-slate-400/50 text-xs self-center mt-5">Genre: {game.genre}</p>
       </div>
