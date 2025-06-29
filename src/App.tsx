@@ -120,6 +120,7 @@ const App: React.FC = () => {
 		return result;
 	}, [games, selectedGenre, searchTerm]);
 
+	// Filtro de favoritos
 	useEffect(() => {
 		const applyFilter = async () => {
 			if (isFavoriteActive && auth.currentUser) {
@@ -142,6 +143,7 @@ const App: React.FC = () => {
 		applyFilter();
 	}, [filtered, isFavoriteActive]);
 
+	// Ordenação de jogos
 	useEffect(() => {
 		setFilteredGames((prevFilteredGames) => {
 			const ratedGames = prevFilteredGames.filter((game) => game.rating !== 0);
