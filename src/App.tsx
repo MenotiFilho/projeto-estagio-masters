@@ -48,12 +48,12 @@ const App: React.FC = () => {
 		try {
 			const headers = { 'dev-email-address': 'menotimfilho@gmail.com' };
 
-			const response = await axios.get(
+			const response = await axios.get<Game[]>(
 				'https://games-test-api-81e9fb0d564a.herokuapp.com/api/data',
 				{ headers, timeout: 5000 }
 			);
 
-			const gamesFetched = response.data.map((game: Game) => ({
+			const gamesFetched = response.data.map((game) => ({
 				...game,
 				favorite: false,
 				rating: 0,
@@ -107,7 +107,6 @@ const App: React.FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Filtro aplicado dinamicamente com useMemo
 	const filtered = useMemo(() => {
 		let result = [...games];
 
@@ -121,7 +120,6 @@ const App: React.FC = () => {
 		return result;
 	}, [games, selectedGenre, searchTerm]);
 
-	// Atualiza os jogos filtrados com ou sem favoritos
 	useEffect(() => {
 		const applyFilter = async () => {
 			if (isFavoriteActive && auth.currentUser) {
@@ -144,7 +142,6 @@ const App: React.FC = () => {
 		applyFilter();
 	}, [filtered, isFavoriteActive]);
 
-	// Ordenação reativa com base no isAscending
 	useEffect(() => {
 		setFilteredGames((prevFilteredGames) => {
 			const ratedGames = prevFilteredGames.filter((game) => game.rating !== 0);
