@@ -145,16 +145,17 @@ const App: React.FC = () => {
   }, [filtered, isFavoriteActive]);
 
  useEffect(() => {
-  const ratedGames = filtered.filter((game) => game.rating !== 0);
-  const unratedGames = filtered.filter((game) => game.rating === 0);
+  const sortedGames = [...filtered];
 
-  ratedGames.sort((a, b) => {
-    return isAscending ? a.rating - b.rating : b.rating - a.rating;
+  sortedGames.sort((a, b) => {
+    if (isAscending) {
+      return a.rating - b.rating;
+    } else {
+      return b.rating - a.rating;
+    }
   });
 
-  unratedGames.sort((a, b) => a.title.localeCompare(b.title));
-
-  setFilteredGames([...ratedGames, ...unratedGames]);
+  setFilteredGames(sortedGames);
 }, [filtered, isAscending]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
