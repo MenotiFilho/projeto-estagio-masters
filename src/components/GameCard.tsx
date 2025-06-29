@@ -12,6 +12,7 @@ type Game = {
   short_description: string;
   genre: string;
   favorite: boolean;
+  rating: number;  // Adicionando rating ao tipo Game
 };
 
 type GameCardProps = {
