@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
 type Game = {
-	id: number;
-	title: string;
-	thumbnail: string;
-	short_description: string;
-	genre: string;
-	favorite: boolean;
+  id: number;
+  title: string;
+  thumbnail: string;
+  short_description: string;
+  genre: string;
+  favorite: boolean;
+  rating: number;  // Adicionando rating ao tipo Game
 };
-
 type GenreFilterProps = {
 	selectedGenre: string;
 	onGenreChange: (genre: string) => void;
