@@ -11,9 +11,6 @@ import {
 	collection,
 	doc,
 	getDoc,
-	getDocs,
-	query,
-	where,
 } from 'firebase/firestore';
 import { Separator } from './components/ui/separator';
 import { useToast } from './components/ui/use-toast';
