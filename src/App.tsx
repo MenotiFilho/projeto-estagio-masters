@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios, { AxiosError } from 'axios';
 import { auth, db } from './firebase';
-import { collection, doc, getDoc, setDoc, query, where, getDocs } from 'firebase/firestore';  // Certifique-se de importar tudo que precisar
+import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 
 type Game = {
   id: number;
@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
+  // Função para buscar os dados da API
   const fetchData = async () => {
     try {
       const headers = { 'dev-email-address': 'menotimfilho@gmail.com' };
@@ -61,16 +62,19 @@ const App: React.FC = () => {
     }
   };
 
+  // Efeito para buscar os dados quando o componente é montado
   useEffect(() => {
     fetchData();
   }, []);
 
+  // Função de filtro para os jogos
   const filtered = useMemo(() => {
     let result = [...games];
 
     if (selectedGenre && selectedGenre !== 'Todos') {
       result = result.filter((game: Game) => game.genre === selectedGenre);
     }
+
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter((game: Game) => game.title.toLowerCase().includes(term));
@@ -78,6 +82,7 @@ const App: React.FC = () => {
     return result;
   }, [games, selectedGenre, searchTerm]);
 
+  // Aplicar o filtro para jogos favoritos, se ativo
   useEffect(() => {
     const applyFilter = async () => {
       if (isFavoriteActive && auth.currentUser) {
@@ -101,8 +106,57 @@ const App: React.FC = () => {
   }, [filtered, isFavoriteActive]);
 
   return (
-    <div>
-      {/* Seu código de UI */}
+    <div className="App">
+      <div className="filters">
+        {/* Filtro de pesquisa */}
+        <input
+          type="text"
+          placeholder="Buscar jogos"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        
+        {/* Filtro de gênero */}
+        <select
+          value={selectedGenre}
+          onChange={(e) => setSelectedGenre(e.target.value)}
+        >
+          <option value="Todos">Todos</option>
+          {/* Adicione outros gêneros conforme necessário */}
+          <option value="Ação">Ação</option>
+          <option value="RPG">RPG</option>
+          <option value="Aventura">Aventura</option>
+        </select>
+
+        {/* Filtro de favoritos */}
+        <label>
+          Mostrar apenas favoritos
+          <input
+            type="checkbox"
+            checked={isFavoriteActive}
+            onChange={() => setIsFavoriteActive(!isFavoriteActive)}
+          />
+        </label>
+      </div>
+
+      <div className="games-list">
+        {filteredGames.length > 0 ? (
+          filteredGames.map((game) => (
+            <div key={game.id} className="game-card">
+              <img src={game.thumbnail} alt={game.title} />
+              <h3>{game.title}</h3>
+              <p>{game.short_description}</p>
+              <p>Gênero: {game.genre}</p>
+              <p>Avaliação: {game.rating}</p>
+              <button onClick={() => alert(`Favoritar o jogo ${game.title}`)}>
+                {game.favorite ? 'Desfavoritar' : 'Favoritar'}
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>Nenhum jogo encontrado</p>
+        )}
+      </div>
     </div>
   );
 };
