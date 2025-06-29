@@ -10,7 +10,7 @@ import { auth, db } from './firebase';
 import {
 	collection,
 	doc,
-	getDoc,
+	getDoc
 } from 'firebase/firestore';
 import { Separator } from './components/ui/separator';
 import { useToast } from './components/ui/use-toast';
