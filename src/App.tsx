@@ -7,11 +7,7 @@ import { Oval } from 'react-loader-spinner';
 import NavBar from './components/NavBar';
 import { Toaster } from './components/ui/toaster';
 import { auth, db } from './firebase';
-import {
-	collection,
-	doc,
-	getDoc
-} from 'firebase/firestore';
+import { collection, doc, getDoc } from 'firebase/firestore';
 import { Separator } from './components/ui/separator';
 import { useToast } from './components/ui/use-toast';
 import ScrollToTopButton from './components/ScrollToTopButton';
@@ -28,12 +24,12 @@ type Game = {
 };
 
 const App: React.FC = () => {
-	const [loading, setLoading] = useState<boolean>(true);
+	const [loading, setLoading] = useState(true);
 	const [games, setGames] = useState<Game[]>([]);
-	const [error, setError] = useState<string | undefined>(undefined);
+	const [error, setError] = useState<string | undefined>();
 
-	const [searchTerm, setSearchTerm] = useState<string>('');
-	const [selectedGenre, setSelectedGenre] = useState<string>('Todos');
+	const [searchTerm, setSearchTerm] = useState('');
+	const [selectedGenre, setSelectedGenre] = useState('Todos');
 	const [isFavoriteActive, setIsFavoriteActive] = useState(false);
 	const [isAscending, setIsAscending] = useState(false);
 
@@ -42,13 +38,12 @@ const App: React.FC = () => {
 	const fetchData = async () => {
 		try {
 			const headers = { 'dev-email-address': 'menotimfilho@gmail.com' };
-
 			const response = await axios.get(
 				'https://games-test-api-81e9fb0d564a.herokuapp.com/api/data',
 				{ headers, timeout: 5000 }
 			);
 
-			const gamesFetched = response.data.map((game: any) => ({
+			const gamesFetched = response.data.map((game: Game) => ({
 				...game,
 				favorite: false,
 				rating: 0,
@@ -58,20 +53,19 @@ const App: React.FC = () => {
 			if (user) {
 				const userId = user.uid;
 				await Promise.all(
-					gamesFetched.map(async (game: Game) => {
+					gamesFetched.map(async (game) => {
 						const gameRef = doc(collection(db, 'users', userId, 'games'), String(game.id));
 						const gameDoc = await getDoc(gameRef);
 						if (gameDoc.exists()) {
-							const gameData = gameDoc.data();
-							game.favorite = gameData.favorite || false;
-							game.rating = gameData.rating || 0;
+							const data = gameDoc.data();
+							game.favorite = data.favorite || false;
+							game.rating = data.rating || 0;
 						}
 					})
 				);
 			}
 
 			setGames(gamesFetched);
-			setLoading(false);
 		} catch (error) {
 			if ((error as AxiosError).code === 'ECONNABORTED') {
 				showToast('O servidor demorou para responder, tente mais tarde');
@@ -84,6 +78,7 @@ const App: React.FC = () => {
 			} else {
 				showToast('O servidor não conseguiu responder por agora, tente novamente mais tarde');
 			}
+		} finally {
 			setLoading(false);
 		}
 	};
@@ -102,53 +97,28 @@ const App: React.FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Filtro e ordenação centralizados no useMemo
 	const filteredGames = useMemo(() => {
-		let result = [...games];
+		let filtered = [...games];
 
-		if (selectedGenre && selectedGenre !== 'Todos') {
-			result = result.filter((game) => game.genre === selectedGenre);
+		if (selectedGenre !== 'Todos') {
+			filtered = filtered.filter((g) => g.genre === selectedGenre);
 		}
-
 		if (searchTerm) {
 			const term = searchTerm.toLowerCase();
-			result = result.filter((game) => game.title.toLowerCase().includes(term));
+			filtered = filtered.filter((g) => g.title.toLowerCase().includes(term));
+		}
+		if (isFavoriteActive) {
+			filtered = filtered.filter((g) => g.favorite);
 		}
 
-		if (isFavoriteActive && auth.currentUser) {
-			result = result.filter((game) => game.favorite);
-		}
+		const rated = filtered.filter((g) => g.rating > 0);
+		const unrated = filtered.filter((g) => g.rating === 0);
 
-		// Ordenação
-		const ratedGames = result.filter((game) => game.rating !== 0);
-		const unratedGames = result.filter((game) => game.rating === 0);
+		rated.sort((a, b) => isAscending ? a.rating - b.rating : b.rating - a.rating);
+		unrated.sort((a, b) => a.title.localeCompare(b.title));
 
-		if (isAscending) {
-			ratedGames.sort((a, b) => a.rating - b.rating);
-			unratedGames.sort((a, b) => a.title.localeCompare(b.title));
-		} else {
-			ratedGames.sort((a, b) => b.rating - a.rating);
-			unratedGames.sort((a, b) => a.title.localeCompare(b.title));
-		}
-
-		return [...ratedGames, ...unratedGames];
-	}, [games, searchTerm, selectedGenre, isFavoriteActive, isAscending]);
-
-	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchTerm(event.target.value);
-	};
-
-	const handleGenreChange = (genre: string) => {
-		setSelectedGenre(genre);
-	};
-
-	const handleFavoriteChange = () => {
-		setIsFavoriteActive((prev) => !prev);
-	};
-
-	const handleSortClick = () => {
-		setIsAscending((prev) => !prev);
-	};
+		return [...rated, ...unrated];
+	}, [games, selectedGenre, searchTerm, isFavoriteActive, isAscending]);
 
 	const handleRetryFetch = () => {
 		setLoading(true);
@@ -160,25 +130,21 @@ const App: React.FC = () => {
 		<div className="bg-[#0F172A] text-[#e2e8f0] mb-4 mx-2 flex flex-col justify-center content-center">
 			<NavBar />
 			<div className="flex flex-col max-w-7xl gap-2 justify-center items-center mx-auto w-full">
-				<SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
+				<SearchBar searchTerm={searchTerm} onSearchChange={(e) => setSearchTerm(e.target.value)} />
 				<div className="flex flex-col w-full justify-start items-center gap-1">
-					<GenreFilter
-						selectedGenre={selectedGenre}
-						onGenreChange={handleGenreChange}
-						games={games}
-					/>
+					<GenreFilter selectedGenre={selectedGenre} onGenreChange={setSelectedGenre} games={games} />
 					<div className="flex gap-1 justify-start items-start w-full">
 						<button
 							className={`rounded-md px-3 py-1 h-fit text-lg flex items-center justify-center ${
 								isFavoriteActive ? 'bg-blue-500' : 'bg-[#1E293B]'
 							}`}
-							onClick={handleFavoriteChange}
+							onClick={() => setIsFavoriteActive(!isFavoriteActive)}
 						>
 							Favoritos
 						</button>
 						<button
 							className="bg-[#1E293B] rounded-md px-3 py-1 h-fit text-lg flex items-center justify-center"
-							onClick={handleSortClick}
+							onClick={() => setIsAscending(!isAscending)}
 						>
 							Ordenar por nota
 							{isAscending ? (
@@ -194,16 +160,7 @@ const App: React.FC = () => {
 
 			{loading ? (
 				<div className="w-full flex mt-5 justify-center">
-					<Oval
-						height={80}
-						width={80}
-						color="#1E293B"
-						visible={true}
-						ariaLabel="oval-loading"
-						secondaryColor="#2f415"
-						strokeWidth={2}
-						strokeWidthSecondary={2}
-					/>
+					<Oval height={80} width={80} color="#1E293B" visible ariaLabel="oval-loading" secondaryColor="#2f415" strokeWidth={2} strokeWidthSecondary={2} />
 				</div>
 			) : error ? (
 				<div className="flex flex-col items-center justify-center">
