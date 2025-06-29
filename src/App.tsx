@@ -21,13 +21,13 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 
 type Game = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  short_description: string;
-  genre: string;
-  favorite: boolean;
-  rating: number;  // Adicionando rating ao tipo Game
+	id: number;
+	title: string;
+	thumbnail: string;
+	short_description: string;
+	genre: string;
+	favorite: boolean;
+	rating: number;
 };
 
 const App: React.FC = () => {
@@ -40,20 +40,18 @@ const App: React.FC = () => {
 	const [isFavoriteActive, setIsFavoriteActive] = useState(false);
 	const [isAscending, setIsAscending] = useState(false);
 
-	const [filteredGames, setFilteredGames] = useState<Game[]>([]);
-
 	const { toast } = useToast();
 
 	const fetchData = async () => {
 		try {
 			const headers = { 'dev-email-address': 'menotimfilho@gmail.com' };
 
-			const response = await axios.get<Game[]>(
+			const response = await axios.get(
 				'https://games-test-api-81e9fb0d564a.herokuapp.com/api/data',
 				{ headers, timeout: 5000 }
 			);
 
-			const gamesFetched = response.data.map((game) => ({
+			const gamesFetched = response.data.map((game: any) => ({
 				...game,
 				favorite: false,
 				rating: 0,
@@ -63,7 +61,7 @@ const App: React.FC = () => {
 			if (user) {
 				const userId = user.uid;
 				await Promise.all(
-					gamesFetched.map(async (game) => {
+					gamesFetched.map(async (game: Game) => {
 						const gameRef = doc(collection(db, 'users', userId, 'games'), String(game.id));
 						const gameDoc = await getDoc(gameRef);
 						if (gameDoc.exists()) {
@@ -107,59 +105,37 @@ const App: React.FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const filtered = useMemo(() => {
+	// Filtro e ordenação centralizados no useMemo
+	const filteredGames = useMemo(() => {
 		let result = [...games];
 
 		if (selectedGenre && selectedGenre !== 'Todos') {
 			result = result.filter((game) => game.genre === selectedGenre);
 		}
+
 		if (searchTerm) {
 			const term = searchTerm.toLowerCase();
 			result = result.filter((game) => game.title.toLowerCase().includes(term));
 		}
-		return result;
-	}, [games, selectedGenre, searchTerm]);
 
-	// Filtro de favoritos
-	useEffect(() => {
-		const applyFilter = async () => {
-			if (isFavoriteActive && auth.currentUser) {
-				const userId = auth.currentUser.uid;
-				const favoritesQuery = query(
-					collection(db, 'users', userId, 'games'),
-					where('favorite', '==', true)
-				);
-				const favoritesSnapshot = await getDocs(favoritesQuery);
-				const favoriteIds = favoritesSnapshot.docs.map((doc) => doc.id);
+		if (isFavoriteActive && auth.currentUser) {
+			result = result.filter((game) => game.favorite);
+		}
 
-				const favoritesFiltered = filtered.filter((game) =>
-					favoriteIds.includes(String(game.id))
-				);
-				setFilteredGames(favoritesFiltered);
-			} else {
-				setFilteredGames(filtered);
-			}
-		};
-		applyFilter();
-	}, [filtered, isFavoriteActive]);
+		// Ordenação
+		const ratedGames = result.filter((game) => game.rating !== 0);
+		const unratedGames = result.filter((game) => game.rating === 0);
 
-	// Ordenação de jogos
-	useEffect(() => {
-		setFilteredGames((prevFilteredGames) => {
-			const ratedGames = prevFilteredGames.filter((game) => game.rating !== 0);
-			const unratedGames = prevFilteredGames.filter((game) => game.rating === 0);
+		if (isAscending) {
+			ratedGames.sort((a, b) => a.rating - b.rating);
+			unratedGames.sort((a, b) => a.title.localeCompare(b.title));
+		} else {
+			ratedGames.sort((a, b) => b.rating - a.rating);
+			unratedGames.sort((a, b) => a.title.localeCompare(b.title));
+		}
 
-			if (isAscending) {
-				ratedGames.sort((a, b) => a.rating - b.rating);
-				unratedGames.sort((a, b) => a.title.localeCompare(b.title));
-			} else {
-				ratedGames.sort((a, b) => b.rating - a.rating);
-				unratedGames.sort((a, b) => a.title.localeCompare(b.title));
-			}
-
-			return [...ratedGames, ...unratedGames];
-		});
-	}, [isAscending]);
+		return [...ratedGames, ...unratedGames];
+	}, [games, searchTerm, selectedGenre, isFavoriteActive, isAscending]);
 
 	const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSearchTerm(event.target.value);
