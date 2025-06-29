@@ -144,29 +144,18 @@ const App: React.FC = () => {
     applyFilter();
   }, [filtered, isFavoriteActive]);
 
-  // Ordenação reativa com base no isAscending
-  useEffect(() => {
-  setFilteredGames((prevFilteredGames) => {
-    // Separando os jogos com e sem avaliação
-    const ratedGames = prevFilteredGames.filter((game) => game.rating !== 0);
-    const unratedGames = prevFilteredGames.filter((game) => game.rating === 0);
+ useEffect(() => {
+  const ratedGames = filtered.filter((game) => game.rating !== 0);
+  const unratedGames = filtered.filter((game) => game.rating === 0);
 
-    // Ordenando os jogos avaliados
-    ratedGames.sort((a, b) => {
-      if (isAscending) {
-        return a.rating - b.rating;
-      } else {
-        return b.rating - a.rating;
-      }
-    });
-
-    // Ordenando os jogos sem avaliação
-    unratedGames.sort((a, b) => a.title.localeCompare(b.title));
-
-    // Combinando os jogos com e sem avaliação, sendo os avaliados primeiro
-    return [...ratedGames, ...unratedGames];
+  ratedGames.sort((a, b) => {
+    return isAscending ? a.rating - b.rating : b.rating - a.rating;
   });
-}, [isAscending, filtered]);  // Ajustado para incluir `filtered`
+
+  unratedGames.sort((a, b) => a.title.localeCompare(b.title));
+
+  setFilteredGames([...ratedGames, ...unratedGames]);
+}, [filtered, isAscending]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
