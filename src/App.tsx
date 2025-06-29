@@ -21,13 +21,13 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import { CaretDown, CaretUp } from '@phosphor-icons/react';
 
 type Game = {
-	id: number;
-	title: string;
-	thumbnail: string;
-	short_description: string;
-	genre: string;
-	favorite: boolean;
-	rating: number;
+  id: number;
+  title: string;
+  thumbnail: string;
+  short_description: string;
+  genre: string;
+  favorite: boolean;
+  rating: number;  // Adicionando rating ao tipo Game
 };
 
 const App: React.FC = () => {
