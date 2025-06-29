@@ -13,7 +13,6 @@
     },
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,                     // Permite emissão dos arquivos mesmo com erros
