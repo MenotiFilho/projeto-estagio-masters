@@ -146,21 +146,27 @@ const App: React.FC = () => {
 
   // Ordenação reativa com base no isAscending
   useEffect(() => {
-    setFilteredGames((prevFilteredGames) => {
-      const ratedGames = prevFilteredGames.filter((game: Game) => game.rating !== 0);
-      const unratedGames = prevFilteredGames.filter((game: Game) => game.rating === 0);
+  setFilteredGames((prevFilteredGames) => {
+    // Separando os jogos com e sem avaliação
+    const ratedGames = prevFilteredGames.filter((game) => game.rating !== 0);
+    const unratedGames = prevFilteredGames.filter((game) => game.rating === 0);
 
+    // Ordenando os jogos avaliados
+    ratedGames.sort((a, b) => {
       if (isAscending) {
-        ratedGames.sort((a: Game, b: Game) => a.rating - b.rating);
-        unratedGames.sort((a: Game, b: Game) => a.title.localeCompare(b.title));
+        return a.rating - b.rating;
       } else {
-        ratedGames.sort((a: Game, b: Game) => b.rating - a.rating);
-        unratedGames.sort((a: Game, b: Game) => a.title.localeCompare(b.title));
+        return b.rating - a.rating;
       }
-
-      return [...ratedGames, ...unratedGames];
     });
-  }, [isAscending]);
+
+    // Ordenando os jogos sem avaliação
+    unratedGames.sort((a, b) => a.title.localeCompare(b.title));
+
+    // Combinando os jogos com e sem avaliação, sendo os avaliados primeiro
+    return [...ratedGames, ...unratedGames];
+  });
+}, [isAscending, filtered]);  // Ajustado para incluir `filtered`
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
