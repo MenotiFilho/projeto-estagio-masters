@@ -14,15 +14,10 @@ type Game = {
 };
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(true);
   const [games, setGames] = useState<Game[]>([]);
-  const [error, setError] = useState<string | undefined>(undefined);
-
-  const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedGenre, setSelectedGenre] = useState<string>('Todos');
   const [isFavoriteActive, setIsFavoriteActive] = useState(false);
-  const [isAscending, setIsAscending] = useState(false);
-
+  const [searchTerm, setSearchTerm] = useState('');
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
 
   const fetchData = async () => {
@@ -57,34 +52,19 @@ const App: React.FC = () => {
       }
 
       setGames(gamesFetched);
-      setLoading(false);
     } catch (error) {
       if ((error as AxiosError).code === 'ECONNABORTED') {
-        showToast('O servidor demorou para responder, tente mais tarde');
-      } else if (
-        axios.isAxiosError(error) &&
-        error.response &&
-        [500, 502, 503, 504, 507, 508, 509].includes(error.response.status)
-      ) {
-        showToast('O servidor falhou em responder, tente recarregar a página');
+        console.log('O servidor demorou para responder, tente mais tarde');
       } else {
-        showToast('O servidor não conseguiu responder por agora, tente novamente mais tarde');
+        console.log('O servidor não conseguiu responder por agora, tente novamente mais tarde');
       }
-      setLoading(false);
     }
-  };
-
-  const showToast = (message: string) => {
-    setError(message);
-    // Exiba o toast conforme seu código
   };
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Filtro aplicado dinamicamente com useMemo
   const filtered = useMemo(() => {
     let result = [...games];
 
@@ -98,7 +78,6 @@ const App: React.FC = () => {
     return result;
   }, [games, selectedGenre, searchTerm]);
 
-  // Atualiza os jogos filtrados com ou sem favoritos
   useEffect(() => {
     const applyFilter = async () => {
       if (isFavoriteActive && auth.currentUser) {
@@ -120,22 +99,6 @@ const App: React.FC = () => {
     };
     applyFilter();
   }, [filtered, isFavoriteActive]);
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleGenreChange = (genre: string) => {
-    setSelectedGenre(genre);
-  };
-
-  const handleFavoriteChange = () => {
-    setIsFavoriteActive((prev) => !prev);
-  };
-
-  const handleSortClick = () => {
-    setIsAscending((prev) => !prev);
-  };
 
   return (
     <div>
