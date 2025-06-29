@@ -40,7 +40,7 @@ const App: React.FC = () => {
       if (user) {
         const userId = user.uid;
         await Promise.all(
-          gamesFetched.map(async (game) => {
+          gamesFetched.map(async (game: Game) => {
             const gameRef = doc(collection(db, 'users', userId, 'games'), String(game.id));
             const gameDoc = await getDoc(gameRef);
             if (gameDoc.exists()) {
@@ -141,7 +141,7 @@ const App: React.FC = () => {
 
       <div className="games-list">
         {filteredGames.length > 0 ? (
-          filteredGames.map((game) => (
+          filteredGames.map((game: Game) => (
             <div key={game.id} className="game-card">
               <img src={game.thumbnail} alt={game.title} />
               <h3>{game.title}</h3>
