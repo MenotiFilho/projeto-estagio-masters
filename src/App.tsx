@@ -112,11 +112,11 @@ const App: React.FC = () => {
     let result = [...games];
 
     if (selectedGenre && selectedGenre !== 'Todos') {
-      result = result.filter((game) => game.genre === selectedGenre);
+      result = result.filter((game: Game) => game.genre === selectedGenre);
     }
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter((game) => game.title.toLowerCase().includes(term));
+      result = result.filter((game: Game) => game.title.toLowerCase().includes(term));
     }
     return result;
   }, [games, selectedGenre, searchTerm]);
@@ -133,7 +133,7 @@ const App: React.FC = () => {
         const favoritesSnapshot = await getDocs(favoritesQuery);
         const favoriteIds = favoritesSnapshot.docs.map((doc) => doc.id);
 
-        const favoritesFiltered = filtered.filter((game) =>
+        const favoritesFiltered = filtered.filter((game: Game) =>
           favoriteIds.includes(String(game.id))
         );
         setFilteredGames(favoritesFiltered);
@@ -147,15 +147,15 @@ const App: React.FC = () => {
   // Ordenação reativa com base no isAscending
   useEffect(() => {
     setFilteredGames((prevFilteredGames) => {
-      const ratedGames = prevFilteredGames.filter((game) => game.rating !== 0);
-      const unratedGames = prevFilteredGames.filter((game) => game.rating === 0);
+      const ratedGames = prevFilteredGames.filter((game: Game) => game.rating !== 0);
+      const unratedGames = prevFilteredGames.filter((game: Game) => game.rating === 0);
 
       if (isAscending) {
-        ratedGames.sort((a, b) => a.rating - b.rating);
-        unratedGames.sort((a, b) => a.title.localeCompare(b.title));
+        ratedGames.sort((a: Game, b: Game) => a.rating - b.rating);
+        unratedGames.sort((a: Game, b: Game) => a.title.localeCompare(b.title));
       } else {
-        ratedGames.sort((a, b) => b.rating - a.rating);
-        unratedGames.sort((a, b) => a.title.localeCompare(b.title));
+        ratedGames.sort((a: Game, b: Game) => b.rating - a.rating);
+        unratedGames.sort((a: Game, b: Game) => a.title.localeCompare(b.title));
       }
 
       return [...ratedGames, ...unratedGames];
